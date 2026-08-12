@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno reales
+.env
+
+# Build de frontend
+frontend/dist/
+
+# Uploads reales 
+backend/src/uploads/*
+!backend/src/uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo / editor
+.DS_Store
+.vscode/
+
+# Datos locales de MySQL si el docker-compose usa carpeta local (no volumen con nombre)
+database/mysql-data/
+
+# JetBrains (WebStorm/IntelliJ), por si alguien del equipo lo usa
+.idea/
