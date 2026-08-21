@@ -24,5 +24,4 @@ router.get("/session",verificarSesion,session);
 router.post("/recuperar-contrasena", recuperarContrasena);
 router.post("/restablecer-contrasena",restablecerContrasena);
 
-
 export default router;
