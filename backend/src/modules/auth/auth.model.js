@@ -118,7 +118,7 @@ export async function buscarUsuarioRecuperacion(usuario){
     return result[0];
 }
 
-export async function TokenRecuperacion(usuarioId,token,fechaExpiracion) {
+export async function tokenRecuperacion(usuarioId,token,fechaExpiracion) {
 
   const [result] = await pool.execute(
     `INSERT INTO tokens_recuperacion
@@ -152,7 +152,7 @@ export async function buscarTokenRecuperacion(token) {
     return result[0];
 }
 
-export async function actualizarPassword(
+export async function actualizarContrasena(
   usuarioId,
   passwordHash
 ) {
