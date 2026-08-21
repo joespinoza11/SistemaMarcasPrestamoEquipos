@@ -13,6 +13,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -23,7 +24,8 @@
     "helmet": "^8.3.0",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
-    "mysql2": "^3.23.3",
+    "mysql2": "^3.23.4",
+    "nodemailer": "^9.0.5",
     "pdfkit": "^0.19.1",
     "xmlbuilder2": "^4.0.3"
   },
