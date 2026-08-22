@@ -8,8 +8,8 @@ node_modules/
 frontend/dist/
 
 # Uploads reales 
-backend/src/uploads/*
-!backend/src/uploads/.gitkeep
+backend/uploads/equipos/*
+!backend/uploads/equipos/.gitkeep
 
 # Logs
 *.log

@@ -2,8 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
+import path from "path";
 
 import authRoutes from "./modules/auth/auth.routes.js";
+import equipoRoutes from "./modules/equipos/equipo.routes.js"; 
+import configuracionRoutes from "./modules/configuracion/configuracion.routes.js";
 
 dotenv.config();
 
@@ -22,7 +25,7 @@ app.use(
 
 
 app.use(express.json());
-
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // Servir imagénes de Uploads como archivos estáticos
 
 
 app.use(
@@ -53,7 +56,8 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/auth",authRoutes);
-
+app.use("/api/equipos", equipoRoutes);  
+app.use("/api/configuracion", configuracionRoutes);
 
 app.listen(PORT, () => {
 
