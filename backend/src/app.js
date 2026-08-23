@@ -7,6 +7,9 @@ import path from "path";
 import authRoutes from "./modules/auth/auth.routes.js";
 import equipoRoutes from "./modules/equipos/equipo.routes.js"; 
 import configuracionRoutes from "./modules/configuracion/configuracion.routes.js";
+import prestamoRoutes from "./modules/prestamos/prestamo.routes.js";
+
+import { rutaNoEncontrada } from "./middlewares/error.middleware.js";
 
 dotenv.config();
 
@@ -15,7 +18,6 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 const app = express();
 
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -23,10 +25,8 @@ app.use(
   })
 );
 
-
 app.use(express.json());
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // Servir imagénes de Uploads como archivos estáticos
-
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); 
 
 app.use(
   session({
@@ -43,8 +43,6 @@ app.use(
   })
 );
 
-
-
 app.get("/", (req, res) => {
 
   res.json({
@@ -53,11 +51,12 @@ app.get("/", (req, res) => {
   });
 });
 
-
-
 app.use("/api/auth",authRoutes);
 app.use("/api/equipos", equipoRoutes);  
 app.use("/api/configuracion", configuracionRoutes);
+app.use("/api/prestamos", prestamoRoutes);
+
+app.use(rutaNoEncontrada);
 
 app.listen(PORT, () => {
 
