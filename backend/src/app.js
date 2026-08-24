@@ -8,6 +8,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import equipoRoutes from "./modules/equipos/equipo.routes.js"; 
 import configuracionRoutes from "./modules/configuracion/configuracion.routes.js";
 import prestamoRoutes from "./modules/prestamos/prestamo.routes.js";
+import marcaRoutes from "./modules/marcas/marca.routes.js";
 
 import { rutaNoEncontrada } from "./middlewares/error.middleware.js";
 
@@ -55,6 +56,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/equipos", equipoRoutes);  
 app.use("/api/configuracion", configuracionRoutes);
 app.use("/api/prestamos", prestamoRoutes);
+app.use("/api/marcas", marcaRoutes);
 
 app.use(rutaNoEncontrada);
 

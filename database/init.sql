@@ -133,10 +133,10 @@ INSERT INTO roles (nombre) VALUES
   ('administrador');
 
 INSERT INTO departamentos (nombre, descripcion, encargado) VALUES
-  ('Administración', 'Departamento administrativo de la institución', 'Por definir');
+  ('Administracion', 'Departamento administrativo de la institucion', 'Por definir');
 
 INSERT INTO configuracion (clave, valor) VALUES
-  ('nombre_institucion', 'Universidad Técnica Nacional'),
+  ('nombre_institucion', 'Universidad Tecnica Nacional'),
   ('rango_ip_permitido', '0.0.0.0/0'),
   ('tiempo_max_sesion_min', '60'),
   ('tamano_max_archivo_mb', '5');
