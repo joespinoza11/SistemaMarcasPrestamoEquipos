@@ -11,6 +11,9 @@ import HistorialPrestamosPage from "./pages/prestamos/HistorialPrestamosPage.jsx
 import DetallePrestamoPage from "./pages/prestamos/DetallePrestamoPage.jsx";
 import RegistrarMarcaPage from "./pages/marcas/RegistrarMarcaPage.jsx";
 import ReporteMarcasPage from "./pages/marcas/ReporteMarcasPage.jsx";
+import PerfilPage from "./pages/usuarios/PerfilPage.jsx";
+import DispositivosPage from "./pages/usuarios/DispositivosPage.jsx";
+import DepartamentosPage from "./pages/administracion/DepartamentosPage.jsx";
 import RutaProtegida from "./components/comunes/RutaProtegida.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
@@ -72,6 +75,31 @@ export default function App() {
               element={
                 <RutaProtegida rolRequerido="administrador">
                   <ReporteMarcasPage />
+                </RutaProtegida>
+              }
+            />
+
+            <Route
+              path="/perfil"
+              element={
+                <RutaProtegida>
+                  <PerfilPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/dispositivos"
+              element={
+                <RutaProtegida>
+                  <DispositivosPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/departamentos"
+              element={
+                <RutaProtegida rolRequerido="administrador">
+                  <DepartamentosPage />
                 </RutaProtegida>
               }
             />

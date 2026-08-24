@@ -68,12 +68,12 @@ export default function Navbar({ usuario, onLogout }) {
           <ul className="navbar-nav">
             {usuario ? (
               <>
-                <li className="nav-item">
-                  <span className="nav-link disabled text-white-50">
-                    <i className="bi bi-person-circle me-1"></i>
-                    {usuario.nombreCompleto}
-                  </span>
-                </li>
+                <NavLink to="/perfil" icono="bi-person-circle">
+                  {usuario.nombreCompleto}
+                </NavLink>
+                <NavLink to="/dispositivos" icono="bi-laptop">
+                  Dispositivos
+                </NavLink>
                 <li className="nav-item">
                   <button className="btn btn-outline-light btn-sm ms-2" onClick={onLogout}>
                     <i className="bi bi-box-arrow-right me-1"></i>
