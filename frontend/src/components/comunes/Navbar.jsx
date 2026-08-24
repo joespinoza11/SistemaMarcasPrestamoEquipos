@@ -48,6 +48,9 @@ export default function Navbar({ usuario, onLogout }) {
             <NavLink to="/marcas" icono="bi-clock-history">
               Marcas
             </NavLink>
+            <NavLink to="/reportes/marcas" icono="bi-file-earmark-text">
+            Reportes
+            </NavLink>
             <NavLink to="/equipos" icono="bi-laptop">
               Equipos
             </NavLink>

@@ -9,7 +9,10 @@ import RestablecerPasswordPage from "./pages/auth/RestablecerPasswordPage.jsx";
 import CrearPrestamoPage from "./pages/prestamos/CrearPrestamoPage.jsx";
 import HistorialPrestamosPage from "./pages/prestamos/HistorialPrestamosPage.jsx";
 import DetallePrestamoPage from "./pages/prestamos/DetallePrestamoPage.jsx";
+import RegistrarMarcaPage from "./pages/marcas/RegistrarMarcaPage.jsx";
+import ReporteMarcasPage from "./pages/marcas/ReporteMarcasPage.jsx";
 import RutaProtegida from "./components/comunes/RutaProtegida.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 import { useAuth } from "./context/AuthContext.jsx";
 
@@ -29,7 +32,8 @@ export default function App() {
             <Route path="/registro" element={<RegistroPage />} />
             <Route path="/recuperar-password" element={<RecuperarPasswordPage />} />
             <Route path="/restablecer-password" element={<RestablecerPasswordPage />} />
-
+            <Route path="*" element={<NotFoundPage />} />
+            
             <Route
               path="/prestamos/nuevo"
               element={
@@ -55,7 +59,22 @@ export default function App() {
               }
             />
 
-            { }
+            <Route
+              path="/marcas"
+              element={
+                <RutaProtegida>
+                  <RegistrarMarcaPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/reportes/marcas"
+              element={
+                <RutaProtegida rolRequerido="administrador">
+                  <ReporteMarcasPage />
+                </RutaProtegida>
+              }
+            />
           </Route>
         </Routes>
       </AuthProvider>
