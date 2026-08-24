@@ -158,9 +158,7 @@ export async function buscarTokenRecuperacion(token) {
             fecha_expiracion,
             usado
          FROM tokens_recuperacion
-         WHERE token = ?
-            AND usado = FALSE
-            AND fecha_expiracion > NOW()`,
+         WHERE token = ?`,
         [token]
     );
 

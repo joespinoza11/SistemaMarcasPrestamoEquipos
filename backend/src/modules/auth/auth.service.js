@@ -209,36 +209,55 @@ export async function solicitarRecuperacion(usuario) {
 
     if (!usuario || usuario.trim() === "") {
 
-        throw crearError(
-            "Debe ingresar el usuario o correo electrónico.", 400);
+        throw crearError("Debe ingresar el usuario o correo electrónico.",400);
     }
+
 
     const usuarioEncontrado = await buscarUsuarioRecuperacion(usuario);
 
 
     if (!usuarioEncontrado) {
 
-        throw crearError("Usuario o correo electrónico no encontrado.",404);
+        throw crearError("Usuario o correo electrónico no encontrado.", 404);
     }
+
 
     const token = crypto.randomUUID();
 
-    const fechaExpiracion =
-        new Date(
-            Date.now() + 30 * 60 * 1000
-        );
 
-    await tokenRecuperacion(
-        usuarioEncontrado.id,
-        token,
-        fechaExpiracion
+    const fechaExpiracion = new Date( Date.now() +
+    process.env.RECOVERY_TOKEN_EXPIRATION_MIN * 60 * 1000
+);
+
+await tokenRecuperacion(
+    usuarioEncontrado.id,
+    token,
+    fechaExpiracion
+);
+
+
+    const enlace =
+        `${process.env.FRONTEND_URL}/restablecer-password?token=${token}`;
+
+
+    if (process.env.NODE_ENV === "development") {
+
+        return {
+            mensaje:
+                "Token de recuperación generado correctamente.",
+            token,
+            enlace
+        };
+    }
+
+    await enviarCorreoRecuperacion(
+        usuarioEncontrado.correo,
+        token
     );
 
-
-    await enviarCorreoRecuperacion(usuarioEncontrado.correo,token);
-
     return {
-        mensaje:"Se envió el enlace de recuperación al correo registrado."
+        mensaje:
+            "Se envió el enlace de recuperación al correo registrado."
     };
 }
 
