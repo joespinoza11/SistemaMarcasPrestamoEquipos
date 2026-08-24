@@ -26,3 +26,16 @@ export async function apiFetch(path, opciones = {}) {
 
   return data;
 }
+
+export async function apiFetchArchivo(path) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error || "No se pudo generar el archivo.");
+  }
+
+  return await res.blob();
+}
