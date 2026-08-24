@@ -5,7 +5,7 @@ import session from "express-session";
 import path from "path";
 
 import authRoutes from "./modules/auth/auth.routes.js";
-import equipoRoutes from "./modules/equipos/equipo.routes.js"; 
+import equipoRoutes from "./modules/equipos/equipo.routes.js";
 import configuracionRoutes from "./modules/configuracion/configuracion.routes.js";
 import prestamoRoutes from "./modules/prestamos/prestamo.routes.js";
 import marcaRoutes from "./modules/marcas/marca.routes.js";
@@ -14,8 +14,8 @@ import { rutaNoEncontrada } from "./middlewares/error.middleware.js";
 
 dotenv.config();
 
-const NAME = process.env.SERVER_NAME;
-const PORT = process.env.SERVER_PORT || 3000;
+const NAME = process.env.SERVER_NAME || "Sistema de Marcas y Préstamo de Equipos";
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.use(
 );
 
 app.use(express.json());
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); 
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use(
   session({
@@ -52,8 +52,8 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/auth",authRoutes);
-app.use("/api/equipos", equipoRoutes);  
+app.use("/api/auth", authRoutes);
+app.use("/api/equipos", equipoRoutes);
 app.use("/api/configuracion", configuracionRoutes);
 app.use("/api/prestamos", prestamoRoutes);
 app.use("/api/marcas", marcaRoutes);
