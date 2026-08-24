@@ -9,6 +9,9 @@ import equipoRoutes from "./modules/equipos/equipo.routes.js";
 import configuracionRoutes from "./modules/configuracion/configuracion.routes.js";
 import prestamoRoutes from "./modules/prestamos/prestamo.routes.js";
 import marcaRoutes from "./modules/marcas/marca.routes.js";
+import departamentoRoutes from "./modules/departamentos/departamento.routes.js";
+import usuarioRoutes from "./modules/usuarios/usuario.routes.js";
+import dispositivoRoutes from "./modules/dispositivos/dispositivo.routes.js";
 
 import { rutaNoEncontrada } from "./middlewares/error.middleware.js";
 
@@ -57,6 +60,9 @@ app.use("/api/equipos", equipoRoutes);
 app.use("/api/configuracion", configuracionRoutes);
 app.use("/api/prestamos", prestamoRoutes);
 app.use("/api/marcas", marcaRoutes);
+app.use("/api/departamentos", departamentoRoutes);
+app.use("/api/usuarios/dispositivos", dispositivoRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 
 app.use(rutaNoEncontrada);
 
