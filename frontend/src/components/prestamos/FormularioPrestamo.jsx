@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Input from "../comunes/Input.jsx";
 import Button from "../comunes/Button.jsx";
 import Alert from "../comunes/Alert.jsx";
@@ -76,7 +77,15 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
       <label className="form-label">Equipos disponibles</label>
 
       {equipos.length === 0 ? (
-        <Alert tipo="info" mensaje="No hay equipos disponibles en este momento." />
+        <div className="alert alert-info d-flex align-items-center justify-content-between">
+          <span>
+            <i className="bi bi-info-circle-fill me-2"></i>
+            No hay equipos disponibles en este momento.
+          </span>
+          <Link to="/equipos" className="btn btn-outline-primary btn-sm">
+            Ir al inventario
+          </Link>
+        </div>
       ) : (
         <div className="list-group mb-3">
           {equipos.map((equipo) => (
@@ -89,6 +98,7 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
                 className="form-check-input"
                 checked={seleccionados.includes(equipo.id)}
                 onChange={() => toggleEquipo(equipo.id)}
+                disabled={enviando}
               />
               <span>
                 <strong>{equipo.codigo}</strong> &mdash; {equipo.descripcion}

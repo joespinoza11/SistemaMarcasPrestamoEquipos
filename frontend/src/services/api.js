@@ -1,5 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
+const RUTAS_SIN_REDIRECCION_AUTOMATICA = ["/auth/login"];
+
 export async function apiFetch(path, opciones = {}) {
   const { body, formData, ...resto } = opciones;
 
@@ -21,6 +23,15 @@ export async function apiFetch(path, opciones = {}) {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
+    const esRutaExcluida = RUTAS_SIN_REDIRECCION_AUTOMATICA.some((ruta) =>
+      path.startsWith(ruta),
+    );
+    const yaEstaEnLogin = window.location.pathname === "/login";
+
+    if (res.status === 401 && !esRutaExcluida && !yaEstaEnLogin) {
+      window.location.href = "/login";
+    }
+
     throw new Error(data?.error || "Ocurrió un error inesperado.");
   }
 

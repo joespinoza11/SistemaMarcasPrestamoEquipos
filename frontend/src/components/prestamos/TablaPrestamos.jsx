@@ -1,13 +1,18 @@
 import { Link } from "react-router-dom";
 import Table from "../comunes/Table.jsx";
 import Badge from "../comunes/Badge.jsx";
+import { formatearFecha } from "../../utils/fechas.util.js";
 
 export default function TablaPrestamos({ prestamos }) {
   const columnas = [
     { key: "id", label: "#" },
     { key: "usuario_nombre", label: "Usuario" },
     { key: "encargado_nombre", label: "Encargado" },
-    { key: "fecha", label: "Fecha" },
+    {
+      key: "fecha",
+      label: "Fecha",
+      render: (fila) => formatearFecha(fila.fecha),
+    },
     {
       key: "estado",
       label: "Estado",
@@ -28,3 +33,4 @@ export default function TablaPrestamos({ prestamos }) {
     />
   );
 }
+

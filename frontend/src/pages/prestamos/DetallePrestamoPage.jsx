@@ -10,6 +10,7 @@ import {
   devolverEquipo,
   devolverPrestamoCompleto,
 } from "../../services/prestamo.service.js";
+import { formatearFecha, formatearFechaHora } from "../../utils/fechas.util.js";
 
 export default function DetallePrestamoPage() {
   const { id } = useParams();
@@ -34,7 +35,6 @@ export default function DetallePrestamoPage() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
     cargar();
   }, [id]);
 
@@ -98,7 +98,7 @@ export default function DetallePrestamoPage() {
               <strong>Encargado:</strong> {prestamo.encargado_nombre}
             </div>
             <div className="col-md-3">
-              <strong>Fecha:</strong> {prestamo.fecha}
+              <strong>Fecha:</strong> {formatearFecha(prestamo.fecha)}
             </div>
             <div className="col-md-3">
               <strong>Estado:</strong> <Badge estado={prestamo.estado} />
@@ -140,7 +140,7 @@ export default function DetallePrestamoPage() {
                 <td>
                   <Badge estado={equipo.estado_devolucion} />
                 </td>
-                <td>{equipo.fecha_devolucion || "—"}</td>
+                <td>{formatearFechaHora(equipo.fecha_devolucion)}</td>
                 <td>
                   {equipo.estado_devolucion === "PENDIENTE" &&
                   prestamo.estado !== "FINALIZADO" ? (
@@ -157,3 +157,4 @@ export default function DetallePrestamoPage() {
     </div>
   );
 }
+
