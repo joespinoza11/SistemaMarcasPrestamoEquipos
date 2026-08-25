@@ -23,8 +23,10 @@ export function generarXml(marcas) {
     item.ele("fecha").txt(valorSeguro(marca.fecha)).up();
     item.ele("horaEntrada").txt(valorSeguro(marca.hora_entrada)).up();
     item.ele("horaSalida").txt(valorSeguro(marca.hora_salida)).up();
-    item.ele("dispositivo").txt(valorSeguro(marca.dispositivo)).up();
-    item.ele("ip").txt(valorSeguro(marca.ip)).up();
+    item.ele("dispositivoEntrada").txt(valorSeguro(marca.dispositivo_entrada)).up();
+    item.ele("dispositivoSalida").txt(valorSeguro(marca.dispositivo_salida)).up();
+    item.ele("ipEntrada").txt(valorSeguro(marca.ip_entrada)).up();
+    item.ele("ipSalida").txt(valorSeguro(marca.ip_salida)).up();
     item.up();
   }
 
@@ -49,17 +51,24 @@ export function generarPdf(marcas, institucion) {
       .text(`Generado: ${new Date().toLocaleString("es-CR")}`, { align: "center" });
     documento.moveDown(1);
 
+    // Columnas más angostas (usuario, depto, fecha, horas, IP) nunca se envuelven.
+    // Solo "Disp. entrada" / "Disp. salida" pueden ocupar 2 líneas, por eso la
+    // altura de cada fila se calcula dinámicamente más abajo.
     const columnas = [
-      { titulo: "Usuario", ancho: 150 },
-      { titulo: "Departamento", ancho: 120 },
-      { titulo: "Fecha", ancho: 75 },
-      { titulo: "Entrada", ancho: 60 },
-      { titulo: "Salida", ancho: 60 },
-      { titulo: "Dispositivo", ancho: 110 },
-      { titulo: "IP", ancho: 95 },
+      { titulo: "Usuario", campo: "usuario", ancho: 100 },
+      { titulo: "Depto.", campo: "departamento", ancho: 80 },
+      { titulo: "Fecha", campo: "fecha", ancho: 55 },
+      { titulo: "Entrada", campo: "hora_entrada", ancho: 40 },
+      { titulo: "Disp. entrada", campo: "dispositivo_entrada", ancho: 100 },
+      { titulo: "IP entrada", campo: "ip_entrada", ancho: 60 },
+      { titulo: "Salida", campo: "hora_salida", ancho: 40 },
+      { titulo: "Disp. salida", campo: "dispositivo_salida", ancho: 100 },
+      { titulo: "IP salida", campo: "ip_salida", ancho: 60 },
     ];
 
     const inicioX = 40;
+    const finalY = 520;
+    const paddingFila = 6;
     let y = documento.y;
 
     function dibujarEncabezado() {
@@ -82,32 +91,35 @@ export function generarPdf(marcas, institucion) {
       return;
     }
 
+    documento.fontSize(8);
+
     for (const marca of marcas) {
-      if (y > 520) {
+      const fila = columnas.map((columna) => valorSeguro(marca[columna.campo]) || "-");
+
+      // Altura real que va a ocupar la fila (la celda más alta manda),
+      // así ninguna fila se dibuja encima de la siguiente.
+      const alturaFila = Math.max(
+        ...columnas.map((columna, i) =>
+          documento.heightOfString(fila[i], { width: columna.ancho }),
+        ),
+        12,
+      );
+
+      if (y + alturaFila > finalY) {
         documento.addPage({ size: "LETTER", margin: 40, layout: "landscape" });
         y = 40;
         dibujarEncabezado();
+        documento.fontSize(8);
       }
 
-      const fila = [
-        valorSeguro(marca.usuario),
-        valorSeguro(marca.departamento),
-        valorSeguro(marca.fecha),
-        valorSeguro(marca.hora_entrada) || "-",
-        valorSeguro(marca.hora_salida) || "-",
-        valorSeguro(marca.dispositivo) || "-",
-        valorSeguro(marca.ip),
-      ];
-
       let x = inicioX;
-      documento.fontSize(8);
 
       for (let i = 0; i < columnas.length; i++) {
         documento.text(fila[i], x, y, { width: columnas[i].ancho });
         x = x + columnas[i].ancho;
       }
 
-      y = y + 16;
+      y = y + alturaFila + paddingFila;
     }
 
     documento.moveDown(2);

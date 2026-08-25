@@ -31,11 +31,29 @@ const COLUMNAS = [
       ),
   },
   {
-    key: "dispositivo",
-    label: "Dispositivo",
-    render: (fila) => fila.dispositivo || <span className="text-muted">No disponible</span>,
+    key: "dispositivo_entrada",
+    label: "Disp. entrada",
+    render: (fila) =>
+      fila.dispositivo_entrada ? (
+        <span title={fila.ip_entrada ? `IP: ${fila.ip_entrada}` : undefined}>
+          {fila.dispositivo_entrada}
+        </span>
+      ) : (
+        <span className="text-muted">—</span>
+      ),
   },
-  { key: "ip", label: "Dirección IP" },
+  {
+    key: "dispositivo_salida",
+    label: "Disp. salida",
+    render: (fila) =>
+      fila.dispositivo_salida ? (
+        <span title={fila.ip_salida ? `IP: ${fila.ip_salida}` : undefined}>
+          {fila.dispositivo_salida}
+        </span>
+      ) : (
+        <span className="text-muted">—</span>
+      ),
+  },
 ];
 
 export default function TablaReporteMarcas({ marcas = [] }) {
