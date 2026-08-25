@@ -4,9 +4,11 @@ import FormularioDepartamento from "../../components/usuarios/FormularioDepartam
 import Loading from "../../components/comunes/Loading.jsx";
 import Alert from "../../components/comunes/Alert.jsx";
 import { listarDepartamentos, eliminarDepartamento } from "../../services/departamento.service.js";
+import { listarUsuarios } from "../../services/usuario.service.js";
 
 export default function DepartamentosPage() {
   const [departamentos, setDepartamentos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
@@ -15,8 +17,13 @@ export default function DepartamentosPage() {
     setError("");
 
     try {
-      const data = await listarDepartamentos();
-      setDepartamentos(data.departamentos || []);
+      const [datosDepartamentos, datosUsuarios] = await Promise.all([
+        listarDepartamentos(),
+        listarUsuarios().catch(() => ({ usuarios: [] })),
+      ]);
+
+      setDepartamentos(datosDepartamentos.departamentos || []);
+      setUsuarios(datosUsuarios.usuarios || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -47,7 +54,7 @@ export default function DepartamentosPage() {
           Departamentos
         </h1>
 
-        <FormularioDepartamento departamento={null} onGuardado={cargar} />
+        <FormularioDepartamento departamento={null} usuarios={usuarios} onGuardado={cargar} />
       </div>
 
       <Alert tipo="danger" mensaje={error} />
@@ -57,6 +64,7 @@ export default function DepartamentosPage() {
       ) : (
         <TablaDepartamentos
           departamentos={departamentos}
+          usuarios={usuarios}
           onGuardado={cargar}
           onEliminar={eliminar}
         />

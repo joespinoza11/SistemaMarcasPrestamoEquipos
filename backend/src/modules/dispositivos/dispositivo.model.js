@@ -57,10 +57,11 @@ export async function actualizarDispositivo(id, nombre, descripcion, estado) {
   return result.affectedRows;
 }
 
-// ELIMINAR DISPOSITIVO
+// ELIMINAR DISPOSITIVO (baja lógica: se marca INACTIVO, no se borra la fila)
 export async function eliminarDispositivo(id) {
   const [result] = await pool.execute(
-    `DELETE FROM dispositivos
+    `UPDATE dispositivos
+         SET estado = 'INACTIVO'
          WHERE id = ?`,
     [id],
   );

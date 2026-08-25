@@ -6,13 +6,19 @@ import Button from "../comunes/Button.jsx";
 import Alert from "../comunes/Alert.jsx";
 import { crearDepartamento, actualizarDepartamento } from "../../services/departamento.service.js";
 
-export default function FormularioDepartamento({ departamento, onGuardado }) {
+export default function FormularioDepartamento({ departamento, usuarios, onGuardado }) {
   const esEdicion = !!departamento;
   const modalId = esEdicion ? `modal-editar-departamento-${departamento.id}` : "modal-nuevo-departamento";
 
+  const listaUsuarios = usuarios || [];
+  const encargadoActual = departamento?.encargado || "";
+  const encargadoValido = listaUsuarios.some((u) => u.nombre_completo === encargadoActual);
+
   const [nombre, setNombre] = useState(departamento?.nombre || "");
-  const [encargado, setEncargado] = useState(departamento?.encargado || "");
   const [descripcion, setDescripcion] = useState(departamento?.descripcion || "");
+  const [encargado, setEncargado] = useState(
+    encargadoValido ? encargadoActual : listaUsuarios[0]?.nombre_completo || "",
+  );
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
 
@@ -43,8 +49,8 @@ export default function FormularioDepartamento({ departamento, onGuardado }) {
 
       if (!esEdicion) {
         setNombre("");
-        setEncargado("");
         setDescripcion("");
+        setEncargado(listaUsuarios[0]?.nombre_completo || "");
       }
 
       cerrar();
@@ -89,12 +95,28 @@ export default function FormularioDepartamento({ departamento, onGuardado }) {
                   requerido
                 />
 
-                <Input
-                  etiqueta="Encargado (opcional)"
-                  nombre="encargado"
-                  valor={encargado}
-                  onChange={(e) => setEncargado(e.target.value)}
-                />
+                {listaUsuarios.length > 0 ? (
+                  <div className="mb-3">
+                    <label className="form-label">Encargado</label>
+                    <select
+                      className="form-select"
+                      name="encargado"
+                      value={encargado}
+                      onChange={(e) => setEncargado(e.target.value)}
+                      required
+                    >
+                      {listaUsuarios.map((u) => (
+                        <option key={u.id} value={u.nombre_completo}>
+                          {u.departamento ? `${u.nombre_completo} — ${u.departamento}` : u.nombre_completo}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="form-text mb-3">
+                    No hay usuarios registrados para asignar como encargado todavía.
+                  </div>
+                )}
 
                 <Textarea
                   etiqueta="Descripción (opcional)"

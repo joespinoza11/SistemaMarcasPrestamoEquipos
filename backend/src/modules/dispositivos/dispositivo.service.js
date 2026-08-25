@@ -104,11 +104,11 @@ export async function actualizarDispositivo(id, usuarioId, datos) {
   return { id: Number(id), nombre, descripcion, estado };
 }
 
-// ELIMINAR DISPOSITIVO
+// ELIMINAR DISPOSITIVO 
 export async function eliminarDispositivo(id, usuarioId) {
   await obtenerDispositivoDelUsuario(id, usuarioId);
 
   await eliminarDispositivoDB(id);
 
-  return { mensaje: "Dispositivo eliminado correctamente." };
+  return { mensaje: "Dispositivo desactivado correctamente." };
 }
