@@ -12,6 +12,20 @@ const NOMBRES_LEGIBLES = {
   tiempo_max_sesion_min: "el tiempo máximo de sesión",
   tamano_max_archivo_mb: "el tamaño máximo de archivo",
 };
+const REGEX_IP =
+  /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(\/(\d|[1-2]\d|3[0-2]))?$/;
+
+function validarRangoIp(valor) {
+  const rangos = valor.split(",").map((r) => r.trim());
+  for (const rango of rangos) {
+    if (!REGEX_IP.test(rango)) {
+      throw crearError(
+        `"${rango}" no es una IP o rango CIDR válido (ej. 192.168.1.0/24).`,
+        400,
+      );
+    }
+  }
+}
 
 function nombreLegible(clave) {
   return NOMBRES_LEGIBLES[clave] || `el parámetro "${clave}"`;
@@ -66,9 +80,13 @@ export async function actualizarParametros(cambios) {
       }
     }
 
+    if (clave === "rango_ip_permitido") {
+      validarRangoIp(String(valor));
+    }
+
     const existente = await buscarConfiguracionPorClave(clave);
 
-      if (!existente) {
+    if (!existente) {
       throw crearError(`No existe ${nombreLegible(clave)}.`, 404);
     }
 
