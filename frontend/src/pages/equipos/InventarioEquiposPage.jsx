@@ -141,7 +141,7 @@ export default function InventarioEquiposPage() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="page-header">
         <h2>
           <i className="bi bi-laptop me-2"></i>
           Inventario de equipos

@@ -1,31 +1,25 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 
-/**
- * Layout general de la aplicación.
- *
- * Se usa como elemento "padre" de todas las rutas en App.jsx
- * (patrón de rutas anidadas de React Router). El <Outlet/> es
- * donde se renderiza la página específica de cada ruta hija.
- *
- * Los props `usuario` y `onLogout` simplemente se pasan a la Navbar;
- * mientras no exista AuthContext, App.jsx puede omitirlos.
- */
 export default function Layout({ usuario, onLogout }) {
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="app-shell">
       <Navbar usuario={usuario} onLogout={onLogout} />
 
-      <main className="container pb-5 flex-grow-1">
+      <main className="app-main">
         <Outlet />
       </main>
 
-      <footer className="bg-primary text-white text-center py-3 mt-auto">
-        <small>
-          <i className="bi bi-mortarboard-fill me-1"></i>
-          Sistema de Marcas y Préstamo de Equipos &mdash; {new Date().getFullYear()} &mdash;
-          Tecnologías y Sistemas Web II
-        </small>
+      <footer className="app-footer">
+        <div className="footer-inner">
+          <small>
+            <i className="bi bi-cpu-fill me-2"></i>
+            Sistema de Marcas y Préstamo de Equipos
+          </small>
+          <small className="text-secondary">
+            Tecnologías y Sistemas Web II · {new Date().getFullYear()}
+          </small>
+        </div>
       </footer>
     </div>
   );

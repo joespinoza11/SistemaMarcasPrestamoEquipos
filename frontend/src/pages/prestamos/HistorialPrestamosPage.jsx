@@ -32,7 +32,6 @@ export default function HistorialPrestamosPage() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     cargar();
   }, []);
 
@@ -42,7 +41,7 @@ export default function HistorialPrestamosPage() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="page-header">
         <h1 className="h4 mb-0">
           <i className="bi bi-clock-history me-2"></i>
           Historial de préstamos

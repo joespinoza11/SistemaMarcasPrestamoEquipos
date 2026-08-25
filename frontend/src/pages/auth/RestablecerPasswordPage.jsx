@@ -55,9 +55,9 @@ export default function RestablecerPasswordPage() {
   }
 
   return (
-    <div className="row justify-content-center mt-5">
+    <div className="auth-shell">
       <div className="col-12 col-md-6 col-lg-4">
-        <div className="card shadow-sm">
+        <div className="auth-card">
           <div className="card-body p-4">
             <h1 className="h4 mb-4 text-center">
               <i className="bi bi-shield-lock-fill me-2"></i>

@@ -101,11 +101,11 @@ export default function LoginPage() {
 
 
   return (
-    <div className="row justify-content-center mt-5">
+    <div className="auth-shell">
 
       <div className="col-12 col-md-6 col-lg-4">
 
-        <div className="card shadow-sm">
+        <div className="auth-card">
 
           <div className="card-body p-4">
 

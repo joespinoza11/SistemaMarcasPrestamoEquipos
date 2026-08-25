@@ -8,7 +8,6 @@ import Button from "../../components/comunes/Button.jsx";
 import Alert from "../../components/comunes/Alert.jsx";
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// misma regla que backend/src/modules/auth/auth.service.js: 8+, mayúscula, minúscula, número
 const REGEX_CONTRASENA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const FORM_INICIAL = {
@@ -30,11 +29,6 @@ export default function RegistroPage() {
   const [enviando, setEnviando] = useState(false);
   const [departamentos, setDepartamentos] = useState([]);
 
-  // El módulo de departamentos todavía no está construido en el backend
-  // (Persona 2, pendiente). Mientras tanto, se usa el departamento semilla
-  // que ya viene cargado en database/init.sql (id 1, "Administración"),
-  // para no bloquear el registro. Quitar este fallback en cuanto exista
-  // GET /api/departamentos.
   useEffect(() => {
     async function cargarDepartamentos() {
       try {
@@ -102,8 +96,6 @@ export default function RegistroPage() {
       setExito("Cuenta creada correctamente. Ya puede iniciar sesión.");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      // Errores de duplicado (correo/username ya registrado) vienen del
-      // backend como texto plano en err.message (ver auth.service.js).
       setErrorGeneral(err.message);
     } finally {
       setEnviando(false);
@@ -111,9 +103,9 @@ export default function RegistroPage() {
   }
 
   return (
-    <div className="row justify-content-center mt-4">
+    <div className="auth-shell">
       <div className="col-12 col-md-8 col-lg-6">
-        <div className="card shadow-sm">
+        <div className="auth-card">
           <div className="card-body p-4">
             <h1 className="h4 mb-4 text-center">
               <i className="bi bi-person-plus-fill me-2"></i>

@@ -107,7 +107,7 @@ export default function DetallePrestamoPage() {
         </div>
       </div>
 
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="page-header">
         <h2 className="h5 mb-0">Equipos del préstamo</h2>
 
         {hayPendientes && (
@@ -157,4 +157,3 @@ export default function DetallePrestamoPage() {
     </div>
   );
 }
-

@@ -1,10 +1,12 @@
 export default function Loading({ mensaje = "Cargando información..." }) {
   return (
-    <div className="text-center mt-5">
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Cargando...</span>
+    <div className="app-loading">
+      <div>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+        <p className="mt-3 mb-0 small">{mensaje}</p>
       </div>
-      <p className="mt-2">{mensaje}</p>
     </div>
   );
 }
