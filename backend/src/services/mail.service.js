@@ -20,7 +20,7 @@ export async function enviarCorreoRecuperacion(
 ) {
 
   const enlace =
-    `http://localhost:5173/restablecer-password?token=${token}`;
+  `${process.env.FRONTEND_URL}/restablecer-password?token=${token}`;
 
 
   await transporter.sendMail({
