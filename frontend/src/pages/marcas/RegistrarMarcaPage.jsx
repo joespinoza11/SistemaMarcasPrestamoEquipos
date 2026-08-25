@@ -5,6 +5,7 @@ import Alert from "../../components/comunes/Alert.jsx";
 import Badge from "../../components/comunes/Badge.jsx";
 import { registrarMarca } from "../../services/marca.service.js";
 import { obtenerIdentificadorDispositivo } from "../../utils/marca.util.js";
+import { formatearFecha } from "../../utils/fechas.util.js";
 
 export default function RegistrarMarcaPage() {
   const [enviando, setEnviando] = useState(false);
@@ -83,7 +84,7 @@ export default function RegistrarMarcaPage() {
 
                 <div className="small">
                   <div>
-                    <strong>Fecha:</strong> {marca.fecha}
+                    <strong>Fecha:</strong> {formatearFecha(marca.fecha)}
                   </div>
                   <div>
                     <strong>Hora:</strong> {marca.hora}
