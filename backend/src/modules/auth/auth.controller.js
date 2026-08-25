@@ -5,6 +5,8 @@ import {
     restablecerContrasena
 } from "./auth.service.js";
 
+import { buscarConfiguracionPorClave } from "../configuracion/configuracion.model.js";
+
 export async function registrar(req, res) {
 
     try {
@@ -47,7 +49,10 @@ export async function login(req, res) {
             rol: usuario.rol
         };
 
+        const configSesion = await buscarConfiguracionPorClave("tiempo_max_sesion_min");
+        const minutos = Number(configSesion?.valor) || 60; // se usa 60 como respaldo si no existe
 
+        req.session.cookie.maxAge = minutos * 60 * 1000;
         return res.status(200).json({
 
             mensaje: "Inicio de sesión correcto.", usuario
