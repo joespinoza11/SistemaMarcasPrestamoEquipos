@@ -47,13 +47,14 @@ export async function crearEquipo(codigo, descripcion, imagen) {
 }
 
 // ACTUALIZAR EQUIPO
-export async function actualizarEquipo(id, descripcion, imagen) {
+export async function actualizarEquipo(id, codigo, descripcion, imagen) {
   const [result] = await pool.execute(
     `UPDATE equipos
-         SET descripcion = ?,
+         SET codigo = ?,
+             descripcion = ?,
              imagen = ?
          WHERE id = ?`,
-    [descripcion, imagen, id],
+    [codigo, descripcion, imagen, id],
   );
   return result.affectedRows;
 }
@@ -67,6 +68,19 @@ export async function actualizarEstadoEquipo(id, estado) {
     [estado, id],
   );
   return result.affectedRows;
+}
+
+// VERIFICAR SI EL EQUIPO TIENE UN PRÉSTAMO PENDIENTE DE DEVOLUCIÓN
+export async function tienePrestamoPendiente(equipoId) {
+  const [result] = await pool.execute(
+    `SELECT id
+         FROM prestamo_detalle
+         WHERE equipo_id = ?
+           AND estado_devolucion = 'PENDIENTE'
+         LIMIT 1`,
+    [equipoId],
+  );
+  return result.length > 0;
 }
 
 // ELIMINAR EQUIPO

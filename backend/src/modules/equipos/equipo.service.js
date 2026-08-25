@@ -4,6 +4,7 @@ import {
   crearEquipo as crearEquipoDB,
   actualizarEquipo as actualizarEquipoDB,
   actualizarEstadoEquipo,
+  tienePrestamoPendiente,
   eliminarEquipo as eliminarEquipoDB,
   listarEquipos as listarEquiposDB,
 } from "./equipo.model.js";
@@ -77,7 +78,7 @@ export async function crearEquipo(datos) {
 
 // ACTUALIZAR EQUIPO
 export async function actualizarEquipo(id, datos) {
-  const { descripcion, imagen } = datos;
+  const { codigo, descripcion, imagen } = datos;
 
   const equipo = await buscarEquipoPorId(id);
 
@@ -85,14 +86,39 @@ export async function actualizarEquipo(id, datos) {
     throw crearError("El equipo no existe.", 404);
   }
 
+  if (!codigo || typeof codigo !== "string") {
+    throw crearError("El código es obligatorio.", 400);
+  }
+
+  const codigoNormalizado = codigo.trim().toUpperCase();
+
+  if (!REGEX_CODIGO.test(codigoNormalizado)) {
+    throw crearError(
+      "El código debe tener el formato EQ-XXX, con 3 dígitos (ej. EQ-001).",
+      400,
+    );
+  }
+
   if (!descripcion || descripcion.trim() === "") {
     throw crearError("La descripción del equipo es obligatoria.", 400);
   }
 
-  await actualizarEquipoDB(id, descripcion, imagen ?? equipo.imagen);
+  const codigoRegistrado = await buscarEquipoPorCodigo(codigoNormalizado);
+
+  if (codigoRegistrado && codigoRegistrado.id !== Number(id)) {
+    throw crearError("Ya existe otro equipo registrado con ese código.", 409);
+  }
+
+  await actualizarEquipoDB(
+    id,
+    codigoNormalizado,
+    descripcion,
+    imagen ?? equipo.imagen,
+  );
 
   return {
     id,
+    codigo: codigoNormalizado,
     descripcion,
     imagen: imagen ?? equipo.imagen,
   };
@@ -110,6 +136,15 @@ export async function cambiarEstadoEquipo(id, estado) {
     throw crearError(
       `Estado no válido. Los estados permitidos son: ${ESTADOS_VALIDOS.join(", ")}.`,
       400,
+    );
+  }
+
+  const enPrestamoActivo = await tienePrestamoPendiente(id);
+
+  if (enPrestamoActivo) {
+    throw crearError(
+      "Este equipo tiene un préstamo activo. Debe devolverse desde el módulo de préstamos antes de cambiar su estado.",
+      409,
     );
   }
 
