@@ -29,6 +29,8 @@ export default function ReporteMarcasPage() {
       setPagina(1);
     } catch (err) {
       setError(err.message);
+      setMarcas([]);
+      setPagina(1);
     } finally {
       setCargando(false);
     }
