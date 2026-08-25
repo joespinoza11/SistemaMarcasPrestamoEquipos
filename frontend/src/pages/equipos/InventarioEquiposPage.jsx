@@ -7,6 +7,7 @@ import Button from "../../components/comunes/Button";
 import Alert from "../../components/comunes/Alert";
 import Modal from "../../components/comunes/Modal";
 import Loading from "../../components/comunes/Loading";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 import {
   listarEquipos,
@@ -23,6 +24,9 @@ const BASE_UPLOADS =
   ) + "/uploads/equipos/";
 
 export default function InventarioEquiposPage() {
+  const { usuario } = useAuth();
+  const esAdmin = usuario?.rol === "administrador";
+
   const [equipos, setEquipos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
@@ -102,6 +106,7 @@ export default function InventarioEquiposPage() {
           className="form-select form-select-sm w-auto d-inline-block"
           value={equipo.estado}
           onChange={(e) => handleCambiarEstado(equipo, e.target.value)}
+          disabled={!esAdmin}
         >
           {ESTADOS.map((estado) => (
             <option key={estado} value={estado}>
@@ -115,22 +120,33 @@ export default function InventarioEquiposPage() {
 
   const acciones = (equipo) => (
     <div className="d-flex gap-2">
-      <Link to={`/equipos/${equipo.id}/editar`}>
+      {esAdmin ? (
+        <Link to={`/equipos/${equipo.id}/editar`}>
+          <Button
+            texto="Editar"
+            tipo="outline-primary"
+            tamano="sm"
+            icono="bi-pencil"
+          />
+        </Link>
+      ) : (
         <Button
           texto="Editar"
           tipo="outline-primary"
           tamano="sm"
           icono="bi-pencil"
+          deshabilitado
         />
-      </Link>
+      )}
 
       <Button
         texto="Eliminar"
         tipo="outline-danger"
         tamano="sm"
-        data-bs-toggle="modal"
-        data-bs-target="#modalEliminarEquipo"
-        onClick={() => setEquipoSeleccionado(equipo)}
+        data-bs-toggle={esAdmin ? "modal" : undefined}
+        data-bs-target={esAdmin ? "#modalEliminarEquipo" : undefined}
+        onClick={esAdmin ? () => setEquipoSeleccionado(equipo) : undefined}
+        deshabilitado={!esAdmin}
       />
     </div>
   );
@@ -147,9 +163,18 @@ export default function InventarioEquiposPage() {
           Inventario de equipos
         </h2>
 
-        <Link to="/equipos/nuevo">
-          <Button texto="Nuevo equipo" tipo="primary" icono="bi-plus-lg" />
-        </Link>
+        {esAdmin ? (
+          <Link to="/equipos/nuevo">
+            <Button texto="Nuevo equipo" tipo="primary" icono="bi-plus-lg" />
+          </Link>
+        ) : (
+          <Button
+            texto="Nuevo equipo"
+            tipo="primary"
+            icono="bi-plus-lg"
+            deshabilitado
+          />
+        )}
       </div>
 
       <Alert tipo="success" mensaje={mensaje} />
