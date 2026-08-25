@@ -56,22 +56,21 @@ export async function buscarDepartamentoPorId(departamentoId) {
   return result[0];
 }
 
-// ACTUALIZAR PERFIL
+// ACTUALIZAR PERFIL (nombre, fecha de nacimiento y departamento;
+// correo y username no son editables desde el perfil propio)
 export async function actualizarPerfil(
   id,
   nombreCompleto,
   fechaNacimiento,
-  correo,
   departamentoId,
 ) {
   const [result] = await pool.execute(
     `UPDATE usuarios
          SET nombre_completo = ?,
              fecha_nacimiento = ?,
-             correo = ?,
              departamento_id = ?
          WHERE id = ?`,
-    [nombreCompleto, fechaNacimiento, correo, departamentoId, id],
+    [nombreCompleto, fechaNacimiento, departamentoId, id],
   );
   return result.affectedRows;
 }

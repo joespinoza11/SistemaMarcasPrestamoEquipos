@@ -7,8 +7,6 @@ import Loading from "../../components/comunes/Loading.jsx";
 import { obtenerPerfil, actualizarPerfil, cambiarPassword } from "../../services/usuario.service.js";
 import { listarDepartamentos } from "../../services/departamento.service.js";
 
-const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// misma regla que backend/src/modules/usuarios/usuario.service.js
 const REGEX_CONTRASENA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const FORM_PASSWORD_INICIAL = {
@@ -26,7 +24,6 @@ export default function PerfilPage() {
   const [form, setForm] = useState({
     nombreCompleto: "",
     fechaNacimiento: "",
-    correo: "",
     departamentoId: "",
   });
   const [guardandoPerfil, setGuardandoPerfil] = useState(false);
@@ -59,7 +56,6 @@ export default function PerfilPage() {
         setForm({
           nombreCompleto: datosPerfil.usuario.nombre_completo || "",
           fechaNacimiento: String(datosPerfil.usuario.fecha_nacimiento || "").slice(0, 10),
-          correo: datosPerfil.usuario.correo || "",
           departamentoId: datosPerfil.usuario.departamento_id || "",
         });
       } catch (err) {
@@ -89,11 +85,6 @@ export default function PerfilPage() {
 
     if (!form.fechaNacimiento) {
       setErrorPerfil("La fecha de nacimiento es obligatoria.");
-      return;
-    }
-
-    if (!REGEX_CORREO.test(form.correo)) {
-      setErrorPerfil("El correo electrónico no es válido.");
       return;
     }
 
@@ -168,9 +159,15 @@ export default function PerfilPage() {
         <div className="card shadow-sm mb-4">
           <div className="card-body">
             <h2 className="h6 text-muted mb-3">
-              Usuario: <strong>{perfil.username}</strong> &middot; Rol:{" "}
+              Usuario: <strong>{perfil.username}</strong> &middot; Correo:{" "}
+              <strong>{perfil.correo}</strong> &middot; Rol:{" "}
               <strong>{perfil.rol}</strong>
             </h2>
+
+            <div className="form-text mb-3">
+              <i className="bi bi-lock me-1"></i>
+              El usuario y el correo no se pueden modificar.
+            </div>
 
             <form onSubmit={handleSubmitPerfil}>
               <Alert tipo="danger" mensaje={errorPerfil} />
@@ -189,15 +186,6 @@ export default function PerfilPage() {
                 nombre="fechaNacimiento"
                 tipo="date"
                 valor={form.fechaNacimiento}
-                onChange={handleChange}
-                requerido
-              />
-
-              <Input
-                etiqueta="Correo electrónico"
-                nombre="correo"
-                tipo="email"
-                valor={form.correo}
                 onChange={handleChange}
                 requerido
               />

@@ -1,15 +1,20 @@
 import { apiFetch } from "./api.js";
 
+// El backend monta este router bajo /api/usuarios/dispositivos
+// (ver app.js: app.use("/api/usuarios/dispositivos", dispositivoRoutes)),
+// no bajo /api/dispositivos. Ojo si el backend cambia este mount path.
+const BASE = "/usuarios/dispositivos";
+
 // LISTAR DISPOSITIVOS DEL USUARIO EN SESIÓN
 export function listarDispositivos() {
-  return apiFetch("/dispositivos", { method: "GET" });
+  return apiFetch(BASE, { method: "GET" });
 }
 
 // REGISTRAR UN DISPOSITIVO NUEVO
 // No se envía identificadorUnico: el backend lo genera automáticamente
 // (crypto.randomUUID()) cuando no viene del cliente.
 export function crearDispositivo(datos) {
-  return apiFetch("/dispositivos", {
+  return apiFetch(BASE, {
     method: "POST",
     body: {
       nombre: datos.nombre,
@@ -20,7 +25,7 @@ export function crearDispositivo(datos) {
 
 // ACTUALIZAR DISPOSITIVO (nombre, descripción y/o estado)
 export function actualizarDispositivo(id, datos) {
-  return apiFetch(`/dispositivos/${id}`, {
+  return apiFetch(`${BASE}/${id}`, {
     method: "PUT",
     body: {
       nombre: datos.nombre,
@@ -32,5 +37,5 @@ export function actualizarDispositivo(id, datos) {
 
 // ELIMINAR DISPOSITIVO (el backend lo desactiva, no lo borra físicamente)
 export function eliminarDispositivo(id) {
-  return apiFetch(`/dispositivos/${id}`, { method: "DELETE" });
+  return apiFetch(`${BASE}/${id}`, { method: "DELETE" });
 }

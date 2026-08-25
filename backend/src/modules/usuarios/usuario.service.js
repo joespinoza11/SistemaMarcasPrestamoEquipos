@@ -3,14 +3,12 @@ import bcrypt from "bcrypt";
 import {
   buscarPerfilPorId,
   buscarUsuarioConPasswordPorId,
-  buscarUsuarioPorCorreo,
   buscarDepartamentoPorId,
   actualizarPerfil as actualizarPerfilDB,
   actualizarPassword as actualizarPasswordDB,
   listarUsuarios as listarUsuariosDB,
 } from "./usuario.model.js";
 
-const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REGEX_CONTRASENA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 // OBTENER PERFIL PROPIO
@@ -25,8 +23,10 @@ export async function obtenerPerfil(usuarioId) {
 }
 
 // ACTUALIZAR PERFIL PROPIO
+// Solo nombre completo, fecha de nacimiento y departamento son editables.
+// Correo y username son datos de identidad del usuario y no se tocan aquí
 export async function actualizarPerfil(usuarioId, datos) {
-  const { nombreCompleto, fechaNacimiento, correo, departamentoId } = datos;
+  const { nombreCompleto, fechaNacimiento, departamentoId } = datos;
 
   const perfilActual = await buscarPerfilPorId(usuarioId);
 
@@ -48,10 +48,6 @@ export async function actualizarPerfil(usuarioId, datos) {
     throw new Error("La fecha de nacimiento no es válida.");
   }
 
-  if (!correo || !REGEX_CORREO.test(correo)) {
-    throw new Error("El correo electrónico no es válido.");
-  }
-
   if (!departamentoId) {
     throw new Error("El departamento o carrera es obligatorio.");
   }
@@ -62,17 +58,10 @@ export async function actualizarPerfil(usuarioId, datos) {
     throw new Error("El departamento no existe.");
   }
 
-  const correoRegistrado = await buscarUsuarioPorCorreo(correo);
-
-  if (correoRegistrado && correoRegistrado.id !== Number(usuarioId)) {
-    throw new Error("El correo ya se encuentra registrado por otro usuario.");
-  }
-
   await actualizarPerfilDB(
     usuarioId,
     nombreCompleto.trim(),
     fechaNacimiento,
-    correo,
     departamentoId,
   );
 

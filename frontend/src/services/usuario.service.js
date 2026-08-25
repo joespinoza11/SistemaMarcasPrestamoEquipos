@@ -6,13 +6,13 @@ export function obtenerPerfil() {
 }
 
 // ACTUALIZAR PERFIL PROPIO
+// Solo nombre, fecha de nacimiento y departamento son editables
 export function actualizarPerfil(datos) {
   return apiFetch("/usuarios/perfil", {
     method: "PUT",
     body: {
       nombreCompleto: datos.nombreCompleto,
       fechaNacimiento: datos.fechaNacimiento,
-      correo: datos.correo,
       departamentoId: datos.departamentoId,
     },
   });
