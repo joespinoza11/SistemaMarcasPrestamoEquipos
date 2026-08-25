@@ -51,7 +51,7 @@ export async function cambiarPasswordPropia(req, res) {
   }
 }
 
-// LISTAR USUARIOS (administración)
+// LISTAR USUARIOS
 export async function listar(req, res) {
   try {
     const usuarios = await listarUsuarios();
@@ -66,7 +66,7 @@ export async function listar(req, res) {
   }
 }
 
-// OBTENER USUARIO POR ID (administración)
+// OBTENER USUARIO POR ID
 export async function obtener(req, res) {
   try {
     const usuario = await obtenerUsuarioPorId(req.params.id);

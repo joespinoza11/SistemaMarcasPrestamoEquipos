@@ -42,8 +42,7 @@ export async function crearDepartamento(datos) {
 
   validarNombre(nombre);
 
-  // La tabla no tiene UNIQUE en `nombre`, pero se valida a nivel de
-  // aplicación para evitar departamentos duplicados por error.
+  
   const existente = await buscarDepartamentoPorNombre(nombre);
 
   if (existente) {

@@ -47,8 +47,7 @@ export async function crearDispositivo(usuarioId, datos) {
 
   const descripcion = datos?.descripcion?.trim() || null;
 
-  // El identificador único puede venir del cliente (por ejemplo, una
-  // huella generada en el navegador/app) o generarse aquí automáticamente.
+ 
   let identificadorUnico = datos?.identificadorUnico?.trim();
 
   if (!identificadorUnico || identificadorUnico === "") {
@@ -79,7 +78,7 @@ export async function crearDispositivo(usuarioId, datos) {
   };
 }
 
-// ACTUALIZAR DISPOSITIVO (nombre, descripción y/o estado)
+// ACTUALIZAR DISPOSITIVO 
 export async function actualizarDispositivo(id, usuarioId, datos) {
   const dispositivo = await obtenerDispositivoDelUsuario(id, usuarioId);
 

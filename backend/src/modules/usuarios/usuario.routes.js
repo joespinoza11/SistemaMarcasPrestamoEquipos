@@ -13,8 +13,7 @@ import { verificarAdministrador } from "../../middlewares/role.middleware.js";
 
 const router = Router();
 
-// Rutas específicas primero: si no, "/:id" capturaría "/perfil"
-// y "/cambiar-password" como si fueran un id.
+// Rutas específicas primero
 router.get("/perfil", verificarSesion, perfil);
 router.put("/perfil", verificarSesion, actualizarPerfilPropio);
 router.put("/cambiar-password", verificarSesion, cambiarPasswordPropia);

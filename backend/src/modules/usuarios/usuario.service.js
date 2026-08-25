@@ -23,8 +23,6 @@ export async function obtenerPerfil(usuarioId) {
 }
 
 // ACTUALIZAR PERFIL PROPIO
-// Solo nombre completo, fecha de nacimiento y departamento son editables.
-// Correo y username son datos de identidad del usuario y no se tocan aquí
 export async function actualizarPerfil(usuarioId, datos) {
   const { nombreCompleto, fechaNacimiento, departamentoId } = datos;
 
@@ -119,12 +117,12 @@ export async function cambiarPassword(usuarioId, datos) {
   return { mensaje: "Contraseña actualizada correctamente." };
 }
 
-// LISTAR USUARIOS (administración)
+// LISTAR USUARIOS
 export async function listarUsuarios() {
   return await listarUsuariosDB();
 }
 
-// OBTENER USUARIO POR ID (administración)
+// OBTENER USUARIO POR ID
 export async function obtenerUsuarioPorId(id) {
   const usuario = await buscarPerfilPorId(id);
 

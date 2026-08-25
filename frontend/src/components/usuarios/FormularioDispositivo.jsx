@@ -9,18 +9,6 @@ import { guardarIdentificadorDispositivo } from "../../utils/marca.util.js";
 
 /**
  * Botón + modal para registrar un dispositivo nuevo o editar uno existente.
- *
- * Sin `dispositivo` (null) -> modo "registrar este dispositivo": al guardar,
- * el identificador que devuelve el backend se guarda en localStorage con
- * guardarIdentificadorDispositivo(), que es justo lo que RegistrarMarcaPage.jsx
- * necesita para poder marcar sin volver a pedirlo.
- *
- * Con `dispositivo` -> modo edición (nombre/descripción); el estado no se
- * toca aquí, para eso está el botón de eliminar (BotonEliminarDispositivo).
- *
- * Cada instancia tiene su propio id de modal (uno por dispositivo + uno
- * para "nuevo"), igual que BotonDevolucion.jsx en el módulo de Préstamos,
- * así que no hay riesgo de que un modal compartido muestre datos de otra fila.
  */
 export default function FormularioDispositivo({ dispositivo, onGuardado }) {
   const esEdicion = !!dispositivo;

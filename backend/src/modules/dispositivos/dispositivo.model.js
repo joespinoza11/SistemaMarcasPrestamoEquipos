@@ -12,7 +12,7 @@ export async function listarDispositivosPorUsuario(usuarioId) {
   return result;
 }
 
-// BUSCAR DISPOSITIVO POR ID (sin importar el dueño, la pertenencia se valida en el service)
+// BUSCAR DISPOSITIVO POR ID
 export async function buscarDispositivoPorId(id) {
   const [result] = await pool.execute(
     `SELECT id, usuario_id, identificador_unico, nombre, descripcion, estado, fecha_registro
@@ -23,7 +23,7 @@ export async function buscarDispositivoPorId(id) {
   return result[0];
 }
 
-// BUSCAR DISPOSITIVO POR IDENTIFICADOR ÚNICO (para validar unicidad)
+// BUSCAR DISPOSITIVO POR IDENTIFICADOR ÚNICO
 export async function buscarDispositivoPorIdentificador(identificadorUnico) {
   const [result] = await pool.execute(
     `SELECT id, identificador_unico
@@ -44,7 +44,7 @@ export async function crearDispositivo(usuarioId, identificadorUnico, nombre, de
   return result.insertId;
 }
 
-// ACTUALIZAR DISPOSITIVO (alias, descripción y estado)
+// ACTUALIZAR DISPOSITIVO 
 export async function actualizarDispositivo(id, nombre, descripcion, estado) {
   const [result] = await pool.execute(
     `UPDATE dispositivos

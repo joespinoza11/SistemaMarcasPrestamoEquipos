@@ -12,12 +12,11 @@ import { verificarAdministrador } from "../../middlewares/role.middleware.js";
 
 const router = Router();
 
-// Públicas: el formulario de registro (auth) necesita listar los
-// departamentos ANTES de que exista una sesión.
+// Públicas
 router.get("/", listar);
 router.get("/:id", obtener);
 
-// Administración: solo un administrador puede modificar el catálogo.
+// Administración
 router.post("/", verificarAdministrador, crear);
 router.put("/:id", verificarAdministrador, actualizar);
 router.delete("/:id", verificarAdministrador, eliminar);

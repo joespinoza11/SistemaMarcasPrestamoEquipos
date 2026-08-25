@@ -1,6 +1,6 @@
 import { apiFetch } from "./api.js";
 
-// LISTAR DEPARTAMENTOS (pública: la usa también /registro sin sesión)
+// LISTAR DEPARTAMENTOS 
 export function listarDepartamentos() {
   return apiFetch("/departamentos", { method: "GET" });
 }
@@ -10,7 +10,7 @@ export function obtenerDepartamento(id) {
   return apiFetch(`/departamentos/${id}`, { method: "GET" });
 }
 
-// CREAR DEPARTAMENTO (administración)
+// CREAR DEPARTAMENTO 
 export function crearDepartamento(datos) {
   return apiFetch("/departamentos", {
     method: "POST",
@@ -22,7 +22,7 @@ export function crearDepartamento(datos) {
   });
 }
 
-// ACTUALIZAR DEPARTAMENTO (administración)
+// ACTUALIZAR DEPARTAMENTO 
 export function actualizarDepartamento(id, datos) {
   return apiFetch(`/departamentos/${id}`, {
     method: "PUT",
@@ -34,7 +34,7 @@ export function actualizarDepartamento(id, datos) {
   });
 }
 
-// ELIMINAR DEPARTAMENTO (administración)
+// ELIMINAR DEPARTAMENTO 
 export function eliminarDepartamento(id) {
   return apiFetch(`/departamentos/${id}`, { method: "DELETE" });
 }

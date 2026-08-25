@@ -1,7 +1,6 @@
 import pool from "../../config/db.js";
 
-// BUSCAR PERFIL COMPLETO POR ID (sin password_hash)
-// LEFT JOIN porque departamento_id admite NULL en el schema real.
+// BUSCAR PERFIL COMPLETO POR ID
 export async function buscarPerfilPorId(id) {
   const [result] = await pool.execute(
     `SELECT
@@ -23,7 +22,7 @@ export async function buscarPerfilPorId(id) {
   return result[0];
 }
 
-// BUSCAR USUARIO CON SU HASH DE CONTRASEÑA (para verificar contraseña actual)
+// BUSCAR USUARIO CON SU HASH DE CONTRASEÑA 
 export async function buscarUsuarioConPasswordPorId(id) {
   const [result] = await pool.execute(
     `SELECT id, password_hash
@@ -34,7 +33,7 @@ export async function buscarUsuarioConPasswordPorId(id) {
   return result[0];
 }
 
-// BUSCAR USUARIO POR CORREO (para validar unicidad al editar perfil)
+// BUSCAR USUARIO POR CORREO 
 export async function buscarUsuarioPorCorreo(correo) {
   const [result] = await pool.execute(
     `SELECT id, correo
@@ -45,7 +44,7 @@ export async function buscarUsuarioPorCorreo(correo) {
   return result[0];
 }
 
-// BUSCAR DEPARTAMENTO POR ID (para validar el departamento al editar perfil)
+// BUSCAR DEPARTAMENTO POR ID 
 export async function buscarDepartamentoPorId(departamentoId) {
   const [result] = await pool.execute(
     `SELECT id
@@ -56,8 +55,7 @@ export async function buscarDepartamentoPorId(departamentoId) {
   return result[0];
 }
 
-// ACTUALIZAR PERFIL (nombre, fecha de nacimiento y departamento;
-// correo y username no son editables desde el perfil propio)
+// ACTUALIZAR PERFIL 
 export async function actualizarPerfil(
   id,
   nombreCompleto,
@@ -86,7 +84,7 @@ export async function actualizarPassword(id, passwordHash) {
   return result.affectedRows;
 }
 
-// LISTAR USUARIOS (administración)
+// LISTAR USUARIOS 
 export async function listarUsuarios() {
   const [result] = await pool.execute(
     `SELECT

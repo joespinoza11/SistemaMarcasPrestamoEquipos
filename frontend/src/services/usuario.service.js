@@ -6,7 +6,6 @@ export function obtenerPerfil() {
 }
 
 // ACTUALIZAR PERFIL PROPIO
-// Solo nombre, fecha de nacimiento y departamento son editables
 export function actualizarPerfil(datos) {
   return apiFetch("/usuarios/perfil", {
     method: "PUT",
@@ -30,15 +29,12 @@ export function cambiarPassword(datos) {
   });
 }
 
-// LISTAR USUARIOS (administración; requiere rol administrador)
-// No se usa en ninguna pantalla todavía, pero el backend ya lo expone
-// (GET /api/usuarios) y otros módulos (p. ej. Préstamos) lo necesitarán
-// para reemplazar su selector manual de ID de usuario.
+// LISTAR USUARIOS 
 export function listarUsuarios() {
   return apiFetch("/usuarios", { method: "GET" });
 }
 
-// OBTENER USUARIO POR ID (administración; requiere rol administrador)
+// OBTENER USUARIO POR ID 
 export function obtenerUsuario(id) {
   return apiFetch(`/usuarios/${id}`, { method: "GET" });
 }
