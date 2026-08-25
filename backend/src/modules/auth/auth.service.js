@@ -2,346 +2,239 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 import {
-    buscarUsuarioPorCorreo,
-    buscarUsuarioPorUsername,
-    buscarDepartamentoPorId,
-    buscarRolUsuario,
-    crearUsuario,
-    buscarUsuarioLogin,
-    buscarUsuarioRecuperacion,
-    tokenRecuperacion,
-    buscarTokenRecuperacion,
-    actualizarContrasena,
-    marcarTokenComoUsado
+  buscarUsuarioPorCorreo,
+  buscarUsuarioPorUsername,
+  buscarDepartamentoPorId,
+  buscarRolUsuario,
+  crearUsuario,
+  buscarUsuarioLogin,
+  buscarUsuarioRecuperacion,
+  tokenRecuperacion,
+  buscarTokenRecuperacion,
+  actualizarContrasena,
+  marcarTokenComoUsado,
 } from "./auth.model.js";
 
 import { enviarCorreoRecuperacion } from "../../services/mail.service.js";
 
-
 function crearError(mensaje, estado) {
+  const error = new Error(mensaje);
 
-    const error = new Error(mensaje);
+  error.estado = estado;
 
-    error.estado = estado;
-
-    return error;
+  return error;
 }
 
 export async function registrarUsuario(datos) {
+  const {
+    nombreCompleto,
+    fechaNacimiento,
+    correo,
+    username,
+    contrasena,
+    confirmacion,
+    departamentoId,
+  } = datos;
 
-    const {
-        nombreCompleto,
-        fechaNacimiento,
-        correo,
-        username,
-        contrasena,
-        confirmacion,
-        departamentoId
-    } = datos;
+  if (!nombreCompleto || nombreCompleto.trim() === "") {
+    throw crearError("El nombre completo es obligatorio.", 400);
+  }
 
-    if (!nombreCompleto || nombreCompleto.trim() === "") {
+  if (!fechaNacimiento) {
+    throw crearError("La fecha de nacimiento es obligatoria.", 400);
+  }
 
-        throw crearError("El nombre completo es obligatorio.", 400);
-    }
+  const fecha = new Date(fechaNacimiento);
 
-    if (!fechaNacimiento) {
+  if (isNaN(fecha.getTime())) {
+    throw crearError("La fecha de nacimiento no es válida.", 400);
+  }
 
-        throw crearError(
-            "La fecha de nacimiento es obligatoria.", 400);
-    }
+  const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  if (!correo || !regexCorreo.test(correo)) {
+    throw crearError("El correo electrónico no es válido.", 400);
+  }
 
-    const fecha =
-        new Date(fechaNacimiento);
+  const correoNormalizado = correo.trim().toLowerCase();
 
+  if (!username || username.trim() === "") {
+    throw crearError("El nombre de usuario es obligatorio.", 400);
+  }
 
-    if (isNaN(fecha.getTime())) {
+  if (!departamentoId) {
+    throw crearError("El departamento o carrera es obligatorio.", 400);
+  }
 
-        throw crearError("La fecha de nacimiento no es válida.", 400);
-    }
+  const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!contrasena || !regexContrasena.test(contrasena)) {
+    throw crearError(
+      "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.",
+      400,
+    );
+  }
 
+  if (contrasena !== confirmacion) {
+    throw crearError("Las contraseñas no coinciden.", 400);
+  }
 
-    if (!correo || !regexCorreo.test(correo)) {
+  const departamento = await buscarDepartamentoPorId(departamentoId);
 
-        throw crearError("El correo electrónico no es válido.", 400);
-    }
+  if (!departamento) {
+    throw crearError("El departamento no existe.", 404);
+  }
 
-    if (!username || username.trim() === "") {
+  const correoRegistrado = await buscarUsuarioPorCorreo(correoNormalizado);
 
-        throw crearError("El nombre de usuario es obligatorio.", 400);
-    }
+  if (correoRegistrado) {
+    throw crearError("El correo ya se encuentra registrado.", 409);
+  }
 
-    if (!departamentoId) {
+  const usernameRegistrado = await buscarUsuarioPorUsername(username);
 
-        throw crearError("El departamento o carrera es obligatorio.", 400);
-    }
+  if (usernameRegistrado) {
+    throw crearError("El nombre de usuario ya se encuentra registrado.", 409);
+  }
 
-    const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  const rol = await buscarRolUsuario();
 
+  if (!rol) {
+    throw crearError("No se encontró el rol de usuario.", 500);
+  }
 
-    if (!contrasena || !regexContrasena.test(contrasena)) {
+  const contrasenaHash = await bcrypt.hash(contrasena, 10);
 
-        throw crearError(
-            "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.", 400);
-    }
-
-    if (contrasena !== confirmacion) {
-
-        throw crearError("Las contraseñas no coinciden.", 400);
-    }
-
-
-    const departamento = await buscarDepartamentoPorId(departamentoId);
-
-    if (!departamento) {
-
-        throw crearError(
-            "El departamento no existe.", 404);
-    }
-
-
-    const correoRegistrado = await buscarUsuarioPorCorreo(correo);
-
-
-    if (correoRegistrado) {
-
-        throw crearError("El correo ya se encuentra registrado.", 409);
-    }
-
-    const usernameRegistrado = await buscarUsuarioPorUsername(username);
-
-
-    if (usernameRegistrado) {
-
-        throw crearError("El nombre de usuario ya se encuentra registrado.", 409);
-    }
-
-    const rol = await buscarRolUsuario();
-
-
-    if (!rol) {
-
-        throw crearError("No se encontró el rol de usuario.", 500);
-    }
-
-    const contrasenaHash = await bcrypt.hash(contrasena, 10);
-
-    const id =
-        await crearUsuario(
-            nombreCompleto,
-            fechaNacimiento,
-            correo,
-            username,
-            contrasenaHash,
-            departamentoId,
-            rol.id
-        );
-
-
-    return {
-        id,
-        nombreCompleto,
-        correo,
-        username
-    };
+  const id = await crearUsuario(
+    nombreCompleto,
+    fechaNacimiento,
+    correoNormalizado,
+    username,
+    contrasenaHash,
+    departamentoId,
+    rol.id,
+  );
+  return { id, nombreCompleto, correo: correoNormalizado, username };
 }
 
 export async function autenticarUsuario(datos) {
+  const { usuario, contrasena } = datos;
 
-    const {
-        usuario,
-        contrasena
-    } = datos;
+  if (!usuario || usuario.trim() === "") {
+    throw crearError("Debe ingresar el usuario o correo.", 400);
+  }
 
+  if (!contrasena) {
+    throw crearError("Debe ingresar la contraseña.", 400);
+  }
 
-    if (!usuario || usuario.trim() === "") {
+  const usuarioEncontrado = await buscarUsuarioLogin(usuario);
 
-        throw crearError("Debe ingresar el usuario o correo.", 400);
-    }
+  if (!usuarioEncontrado) {
+    throw crearError("Usuario o contraseña incorrectos.", 401);
+  }
 
-    if (!contrasena) {
+  const contrasenaCorrecta = await bcrypt.compare(
+    contrasena,
+    usuarioEncontrado.password_hash,
+  );
 
-        throw crearError("Debe ingresar la contraseña.", 400);
-    }
+  if (!contrasenaCorrecta) {
+    throw crearError("Usuario o contraseña incorrectos.", 401);
+  }
 
-    const usuarioEncontrado = await buscarUsuarioLogin(usuario);
+  return {
+    id: usuarioEncontrado.id,
 
+    nombreCompleto: usuarioEncontrado.nombre_completo,
 
-    if (!usuarioEncontrado) {
+    correo: usuarioEncontrado.correo,
 
-        throw crearError(
-            "Usuario o contraseña incorrectos.", 401);
-    }
+    username: usuarioEncontrado.username,
 
-    const contrasenaCorrecta = await bcrypt.compare(contrasena, usuarioEncontrado.password_hash);
-
-
-    if (!contrasenaCorrecta) {
-
-        throw crearError(
-            "Usuario o contraseña incorrectos.",
-            401
-        );
-    }
-
-
-    return {
-        id:
-            usuarioEncontrado.id,
-
-        nombreCompleto:
-            usuarioEncontrado.nombre_completo,
-
-        correo:
-            usuarioEncontrado.correo,
-
-        username:
-            usuarioEncontrado.username,
-
-        rol:
-            usuarioEncontrado.rol
-    };
+    rol: usuarioEncontrado.rol,
+  };
 }
 
 export async function solicitarRecuperacion(usuario) {
+  if (!usuario || usuario.trim() === "") {
+    throw crearError("Debe ingresar el usuario o correo electrónico.", 400);
+  }
 
-    if (!usuario || usuario.trim() === "") {
+  const usuarioEncontrado = await buscarUsuarioRecuperacion(usuario);
 
-        throw crearError("Debe ingresar el usuario o correo electrónico.", 400);
-    }
+  if (!usuarioEncontrado) {
+    throw crearError("Usuario o correo electrónico no encontrado.", 404);
+  }
 
+  const token = crypto.randomUUID();
 
-    const usuarioEncontrado = await buscarUsuarioRecuperacion(usuario);
+  const fechaExpiracion = new Date(
+    Date.now() + process.env.RECOVERY_TOKEN_EXPIRATION_MIN * 60 * 1000,
+  );
 
+  await tokenRecuperacion(usuarioEncontrado.id, token, fechaExpiracion);
 
-    if (!usuarioEncontrado) {
+  const enlace = `${process.env.FRONTEND_URL}/restablecer-password?token=${token}`;
 
-        throw crearError("Usuario o correo electrónico no encontrado.", 404);
-    }
-
-
-    const token = crypto.randomUUID();
-
-
-    const fechaExpiracion = new Date(Date.now() +
-        process.env.RECOVERY_TOKEN_EXPIRATION_MIN * 60 * 1000
-    );
-
-    await tokenRecuperacion(
-        usuarioEncontrado.id,
-        token,
-        fechaExpiracion
-    );
-
-
-    const enlace =
-        `${process.env.FRONTEND_URL}/restablecer-password?token=${token}`;
-
-
-    if (process.env.NODE_ENV === "development") {
-
-        return {
-            mensaje:
-                "Token de recuperación generado correctamente.",
-            token,
-            enlace
-        };
-    }
-
-    await enviarCorreoRecuperacion(
-        usuarioEncontrado.correo,
-        token
-    );
-
+  if (process.env.NODE_ENV === "development") {
     return {
-        mensaje:
-            "Se envió el enlace de recuperación al correo registrado."
+      mensaje: "Token de recuperación generado correctamente.",
+      token,
+      enlace,
     };
+  }
+
+  await enviarCorreoRecuperacion(usuarioEncontrado.correo, token);
+
+  return {
+    mensaje: "Se envió el enlace de recuperación al correo registrado.",
+  };
 }
 
-
 export async function restablecerContrasena(datos) {
+  const { token, nuevaContrasena, confirmacion } = datos;
 
-    const {
-        token,
-        nuevaContrasena,
-        confirmacion
-    } = datos;
+  if (!token || token.trim() === "") {
+    throw crearError("El token es obligatorio.", 400);
+  }
 
-    if (!token || token.trim() === "") {
+  const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-        throw crearError("El token es obligatorio.", 400);
-    }
-
-    const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-
-    if (!nuevaContrasena || !regexContrasena.test(nuevaContrasena)) {
-
-        throw crearError(
-            "La nueva contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.", 400);
-    }
-
-
-    if (nuevaContrasena !== confirmacion) {
-
-        throw crearError(
-            "Las contraseñas no coinciden.", 400);
-    }
-
-    const tokenEncontrado = await buscarTokenRecuperacion(token);
-
-
-    if (!tokenEncontrado) {
-
-        throw crearError(
-            "El token no es válido.", 400
-        );
-    }
-
-
-    if (tokenEncontrado.usado) {
-
-        throw crearError(
-            "El token ya fue utilizado.", 400
-        );
-    }
-
-
-    const fechaExpiracion =
-        new Date(tokenEncontrado.fecha_expiracion
-        );
-
-
-    if (
-        fechaExpiracion.getTime() <= Date.now()
-    ) {
-
-        throw crearError(
-            "El token expiró.", 400
-        );
-    }
-
-
-    const contrasenaHash =
-        await bcrypt.hash(
-            nuevaContrasena,
-            10
-        );
-
-    await actualizarContrasena(
-        tokenEncontrado.usuario_id,
-        contrasenaHash
+  if (!nuevaContrasena || !regexContrasena.test(nuevaContrasena)) {
+    throw crearError(
+      "La nueva contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.",
+      400,
     );
+  }
 
-    await marcarTokenComoUsado(
-        tokenEncontrado.id
-    );
+  if (nuevaContrasena !== confirmacion) {
+    throw crearError("Las contraseñas no coinciden.", 400);
+  }
 
+  const tokenEncontrado = await buscarTokenRecuperacion(token);
 
-    return {
-        mensaje: "Contraseña restablecida correctamente."
-    };
+  if (!tokenEncontrado) {
+    throw crearError("El token no es válido.", 400);
+  }
+
+  if (tokenEncontrado.usado) {
+    throw crearError("El token ya fue utilizado.", 400);
+  }
+
+  const fechaExpiracion = new Date(tokenEncontrado.fecha_expiracion);
+
+  if (fechaExpiracion.getTime() <= Date.now()) {
+    throw crearError("El token expiró.", 400);
+  }
+
+  const contrasenaHash = await bcrypt.hash(nuevaContrasena, 10);
+
+  await actualizarContrasena(tokenEncontrado.usuario_id, contrasenaHash);
+
+  await marcarTokenComoUsado(tokenEncontrado.id);
+
+  return {
+    mensaje: "Contraseña restablecida correctamente.",
+  };
 }
