@@ -14,6 +14,9 @@ import ReporteMarcasPage from "./pages/marcas/ReporteMarcasPage.jsx";
 import PerfilPage from "./pages/usuarios/PerfilPage.jsx";
 import DispositivosPage from "./pages/usuarios/DispositivosPage.jsx";
 import DepartamentosPage from "./pages/administracion/DepartamentosPage.jsx";
+import InventarioEquiposPage from "./pages/equipos/InventarioEquiposPage.jsx";
+import FormularioEquiposPage from "./pages/equipos/FormularioEquiposPage.jsx";
+import ConfiguracionPage from "./pages/administracion/ConfiguracionPage.jsx";
 import RutaProtegida from "./components/comunes/RutaProtegida.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
@@ -33,10 +36,16 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegistroPage />} />
-            <Route path="/recuperar-password" element={<RecuperarPasswordPage />} />
-            <Route path="/restablecer-password" element={<RestablecerPasswordPage />} />
+            <Route
+              path="/recuperar-password"
+              element={<RecuperarPasswordPage />}
+            />
+            <Route
+              path="/restablecer-password"
+              element={<RestablecerPasswordPage />}
+            />
             <Route path="*" element={<NotFoundPage />} />
-            
+
             <Route
               path="/prestamos/nuevo"
               element={
@@ -100,6 +109,38 @@ export default function App() {
               element={
                 <RutaProtegida rolRequerido="administrador">
                   <DepartamentosPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/equipos"
+              element={
+                <RutaProtegida>
+                  <InventarioEquiposPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/equipos/nuevo"
+              element={
+                <RutaProtegida rolRequerido="administrador">
+                  <FormularioEquiposPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/equipos/:id/editar"
+              element={
+                <RutaProtegida rolRequerido="administrador">
+                  <FormularioEquiposPage />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/configuracion"
+              element={
+                <RutaProtegida rolRequerido="administrador">
+                  <ConfiguracionPage />
                 </RutaProtegida>
               }
             />
