@@ -7,6 +7,7 @@ export default function Button({
   anchoCompleto = false,
   icono,
   tamano,
+  ...resto  
 }) {
   return (
     <button
@@ -16,6 +17,7 @@ export default function Button({
       }`}
       onClick={onClick}
       disabled={deshabilitado}
+      {...resto}  
     >
       {icono && <i className={`bi ${icono} me-1`}></i>}
       {texto}
