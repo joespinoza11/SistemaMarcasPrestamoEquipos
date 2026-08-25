@@ -1,23 +1,30 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Input from "../comunes/Input.jsx";
+import Select from "../comunes/Select.jsx";
 import Button from "../comunes/Button.jsx";
 import Alert from "../comunes/Alert.jsx";
 import Loading from "../comunes/Loading.jsx";
 import { listarEquipos } from "../../services/equipo.service.js";
+import { listarUsuarios } from "../../services/usuario.service.js";
 
 export default function FormularioPrestamo({ onSubmit, enviando }) {
   const [usuarioId, setUsuarioId] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
   const [equipos, setEquipos] = useState([]);
   const [seleccionados, setSeleccionados] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function cargarEquipos() {
+    async function cargarDatos() {
       try {
-        const data = await listarEquipos();
-        setEquipos((data.equipos || []).filter((eq) => eq.estado === "DISPONIBLE"));
+        const [datosEquipos, datosUsuarios] = await Promise.all([
+          listarEquipos(),
+          listarUsuarios(),
+        ]);
+
+        setEquipos((datosEquipos.equipos || []).filter((eq) => eq.estado === "DISPONIBLE"));
+        setUsuarios(datosUsuarios.usuarios || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -25,8 +32,13 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
       }
     }
 
-    cargarEquipos();
+    cargarDatos();
   }, []);
+
+  const opcionesUsuarios = usuarios.map((u) => ({
+    value: u.id,
+    label: `${u.nombre_completo} (@${u.username})`,
+  }));
 
   function toggleEquipo(id) {
     setSeleccionados((prev) =>
@@ -38,8 +50,8 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
     e.preventDefault();
     setError("");
 
-    if (!usuarioId || Number.isNaN(Number(usuarioId))) {
-      setError("Debe indicar el ID numérico del usuario que recibe el préstamo.");
+    if (!usuarioId) {
+      setError("Debe seleccionar el usuario que recibe el préstamo.");
       return;
     }
 
@@ -52,27 +64,28 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
   }
 
   if (cargando) {
-    return <Loading mensaje="Cargando equipos disponibles..." />;
+    return <Loading mensaje="Cargando usuarios y equipos disponibles..." />;
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Alert tipo="danger" mensaje={error} />
 
-      <Input
-        etiqueta="ID del usuario que recibe el préstamo"
-        nombre="usuarioId"
-        tipo="number"
-        valor={usuarioId}
-        onChange={(e) => setUsuarioId(e.target.value)}
-        requerido
-      />
-      <div className="form-text mb-3">
-        <i className="bi bi-info-circle me-1"></i>
-        Temporal: hasta que el módulo de Usuarios tenga su listado (GET /api/usuarios), el
-        ID se ingresa manualmente. Puede verlo en la tabla <code>usuarios</code> de
-        phpMyAdmin o al registrar el usuario en <code>/registro</code>.
-      </div>
+      {usuarios.length === 0 ? (
+        <Alert
+          tipo="warning"
+          mensaje="No hay usuarios registrados todavía. Debe registrarse al menos uno antes de crear un préstamo."
+        />
+      ) : (
+        <Select
+          etiqueta="Usuario que recibe el préstamo"
+          nombre="usuarioId"
+          valor={usuarioId}
+          onChange={(e) => setUsuarioId(e.target.value)}
+          opciones={opcionesUsuarios}
+          requerido
+        />
+      )}
 
       <label className="form-label">Equipos disponibles</label>
 
@@ -112,7 +125,7 @@ export default function FormularioPrestamo({ onSubmit, enviando }) {
         texto={enviando ? "Registrando..." : "Registrar préstamo"}
         boton="submit"
         icono="bi-arrow-left-right"
-        deshabilitado={enviando || equipos.length === 0}
+        deshabilitado={enviando || equipos.length === 0 || usuarios.length === 0}
       />
     </form>
   );

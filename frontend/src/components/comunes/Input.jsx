@@ -8,6 +8,9 @@ export default function Input({
   requerido = false,
   error,
   disabled = false,
+  min,
+  max,
+  step,
 }) {
   return (
     <div className="mb-3">
@@ -22,9 +25,13 @@ export default function Input({
         onChange={onChange}
         required={requerido}
         disabled={disabled}
+        min={min}
+        max={max}
+        step={step}
       />
 
       {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
 }
+

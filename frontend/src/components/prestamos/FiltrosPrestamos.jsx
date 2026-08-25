@@ -34,6 +34,7 @@ export default function FiltrosPrestamos({ onFiltrar }) {
           etiqueta="Usuario (ID)"
           nombre="usuario"
           tipo="number"
+          min="1"
           valor={filtros.usuario}
           onChange={handleChange}
         />
@@ -44,6 +45,7 @@ export default function FiltrosPrestamos({ onFiltrar }) {
           etiqueta="Equipo (ID)"
           nombre="equipo"
           tipo="number"
+          min="1"
           valor={filtros.equipo}
           onChange={handleChange}
         />
