@@ -16,7 +16,7 @@ export async function listar(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
+    return res.status(error.status || 500).json({
       error: "No se pudo obtener la lista de equipos.",
     });
   }
@@ -31,7 +31,7 @@ export async function obtener(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(404).json({ error: error.message });
+    return res.status(error.status || 404).json({ error: error.message });
   }
 }
 
@@ -52,7 +52,7 @@ export async function crear(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 
@@ -73,7 +73,7 @@ export async function actualizar(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 
@@ -91,7 +91,7 @@ export async function cambiarEstado(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 
@@ -104,6 +104,6 @@ export async function eliminar(req, res) {
   } catch (error) {
     console.error(error);
 
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
