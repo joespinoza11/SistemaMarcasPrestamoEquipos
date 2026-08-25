@@ -1,6 +1,6 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
-const RUTAS_SIN_REDIRECCION_AUTOMATICA = ["/auth/login"];
+const RUTAS_SIN_REDIRECCION_AUTOMATICA = ["/auth/login", "/auth/session"];
 
 export async function apiFetch(path, opciones = {}) {
   const { body, formData, ...resto } = opciones;
