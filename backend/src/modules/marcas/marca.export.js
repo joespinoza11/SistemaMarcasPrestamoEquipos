@@ -51,9 +51,7 @@ export function generarPdf(marcas, institucion) {
       .text(`Generado: ${new Date().toLocaleString("es-CR")}`, { align: "center" });
     documento.moveDown(1);
 
-    // Columnas más angostas (usuario, depto, fecha, horas, IP) nunca se envuelven.
-    // Solo "Disp. entrada" / "Disp. salida" pueden ocupar 2 líneas, por eso la
-    // altura de cada fila se calcula dinámicamente más abajo.
+    
     const columnas = [
       { titulo: "Usuario", campo: "usuario", ancho: 100 },
       { titulo: "Depto.", campo: "departamento", ancho: 80 },
@@ -96,8 +94,7 @@ export function generarPdf(marcas, institucion) {
     for (const marca of marcas) {
       const fila = columnas.map((columna) => valorSeguro(marca[columna.campo]) || "-");
 
-      // Altura real que va a ocupar la fila (la celda más alta manda),
-      // así ninguna fila se dibuja encima de la siguiente.
+      
       const alturaFila = Math.max(
         ...columnas.map((columna, i) =>
           documento.heightOfString(fila[i], { width: columna.ancho }),

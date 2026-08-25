@@ -108,24 +108,6 @@ export async function listarMarcas(filtros) {
 
 export async function obtenerReporteMarcas(filtros) {
   const { where, valores } = construirFiltros(filtros);
-
-  // Un mismo usuario puede tener varios ciclos ENTRADA/SALIDA en un mismo
-  // día (p. ej. distintos dispositivos a distintas horas). La versión
-  // anterior agrupaba únicamente por usuario_id + fecha y usaba
-  // MIN()/MAX() sobre TODAS las marcas de ese tipo en el día, lo cual
-  // mezclaba dispositivos/IPs de ciclos distintos: MIN(d.nombre) siempre
-  // devuelve el mismo nombre (el alfabéticamente menor) sin importar a
-  // cuál entrada corresponde realmente. Por eso el reporte funcionaba
-  // bien en el primer ciclo del día y luego "se pegaba" al mismo
-  // dispositivo.
-  //
-  // Ahora cada marca se numera dentro de su propio tipo (ENTRADA o
-  // SALIDA), por usuario y fecha, ordenada por hora (ROW_NUMBER). Luego
-  // se empareja la ENTRADA #1 con la SALIDA #1, la ENTRADA #2 con la
-  // SALIDA #2, etc. Así cada fila del reporte es un ciclo real, con su
-  // propio dispositivo e IP. Si un ciclo quedó abierto (entrada sin
-  // salida aún, o una salida sin entrada previa) también se reporta,
-  // con el campo faltante en null.
   const [result] = await pool.execute(
     `WITH marcas_numeradas AS (
              SELECT m.id,
