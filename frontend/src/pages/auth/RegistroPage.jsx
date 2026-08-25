@@ -30,17 +30,27 @@ export default function RegistroPage() {
   const [departamentos, setDepartamentos] = useState([]);
 
   useEffect(() => {
-    async function cargarDepartamentos() {
-      try {
-        const data = await apiFetch("/departamentos");
-        setDepartamentos(data.map((d) => ({ value: d.id, label: d.nombre })));
-      } catch {
-        setDepartamentos([{ value: 1, label: "Administración (temporal)" }]);
-      }
-    }
+  async function cargarDepartamentos() {
+    try {
+      const data = await apiFetch("/departamentos");
 
-    cargarDepartamentos();
-  }, []);
+      setDepartamentos(
+        (data.departamentos || []).map((departamento) => ({
+          value: departamento.id,
+          label: departamento.nombre
+        }))
+      );
+
+    } catch (error) {
+      console.error(error);
+      setErrorGeneral(
+        "No se pudieron cargar los departamentos."
+      );
+    }
+  }
+
+  cargarDepartamentos();
+}, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
